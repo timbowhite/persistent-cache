@@ -2,6 +2,8 @@ var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp-no-bin');
 var rmdir = require('rmdir');
+var writeFileAtomic = require('write-file-atomic');
+var writeFileAtomicSync = writeFileAtomic.sync;
 
 function exists(dir) {
     try {
@@ -53,7 +55,7 @@ function cache(options) {
         var entry = buildCacheEntry(data);
 
         if(persist)
-            fs.writeFile(buildFilePath(name), JSON.stringify(entry), cb);
+            writeFileAtomic(buildFilePath(name), JSON.stringify(entry), cb);
 
         if(ram) {
             entry.data = JSON.stringify(entry.data);
@@ -69,7 +71,7 @@ function cache(options) {
         var entry = buildCacheEntry(data);
 
         if(persist)
-            fs.writeFileSync(buildFilePath(name), JSON.stringify(entry));
+            writeFileAtomicSync(buildFilePath(name), JSON.stringify(entry));
 
         if(ram) {
             memoryCache[name] = entry;
